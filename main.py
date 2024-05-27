@@ -291,6 +291,13 @@ def draw_window(surface, grid, score = 0, last_score = 0):
     draw_grid(surface, grid)
 
 
+def drop_piece_instantly(piece, grid):
+    while valid_space(piece, grid):
+        piece.y += 1
+    piece.y -= 1
+    return piece
+
+
 def main(win):
     last_score = max_score()
     locked_positions = {}
@@ -312,9 +319,8 @@ def main(win):
         level_time += clock.get_rawtime()
         clock.tick()
 
-
         if level_time / 1000 > 5:
-            level_time = 0 
+            level_time = 0
             if fall_speed > 0.12:
                 fall_speed -= 0.005
 
@@ -325,11 +331,9 @@ def main(win):
                 current_piece.y -= 1
                 change_piece = True
 
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-                pygame.display.quit()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
@@ -352,6 +356,10 @@ def main(win):
                     if not valid_space(current_piece, grid):
                         current_piece.rotation -= 1
 
+                if event.key == pygame.K_SPACE:
+                    current_piece = drop_piece_instantly(current_piece, grid)
+                    change_piece = True
+
         shape_pos = convert_shape_format(current_piece)
 
         for i in range(len(shape_pos)):
@@ -359,7 +367,7 @@ def main(win):
             if y > -1:
                 grid[y][x] = current_piece.color
 
-        draw_window(win, grid, score, last_score)  
+        draw_window(win, grid, score, last_score)
         draw_next_shape(next_piece, win)
         pygame.display.update()
 
