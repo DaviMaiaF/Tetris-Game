@@ -302,6 +302,12 @@ def drop_piece_instantly(piece, grid):
     return piece
 
 
+def swap_pieces(current_piece, next_piece):
+    current_piece, next_piece = next_piece, current_piece
+    current_piece.x, current_piece.y = 5, 0
+    return current_piece, next_piece
+
+
 def main(win):
     last_score = max_score()
     locked_positions = {}
@@ -311,6 +317,7 @@ def main(win):
     run = True
     current_piece = get_shape()
     next_piece = get_shape()
+    swap_used = False
     clock = pygame.time.Clock()
     fall_time = 0
     fall_speed = 0.27
@@ -364,6 +371,10 @@ def main(win):
                     current_piece = drop_piece_instantly(current_piece, grid)
                     change_piece = True
 
+                if (event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT) and not swap_used:
+                    current_piece, next_piece = swap_pieces(current_piece, next_piece)
+                    swap_used = True
+
         shape_pos = convert_shape_format(current_piece)
 
         for i in range(len(shape_pos)):
@@ -383,6 +394,7 @@ def main(win):
             next_piece = get_shape()
             change_piece = False
             score += clear_rows(grid, locked_positions) * 10
+            swap_used = False
 
         if check_lost(locked_positions):
             draw_text_middle(win, "GAME OVER!!!", 80, (255, 255, 255))
