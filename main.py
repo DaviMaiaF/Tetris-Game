@@ -1,5 +1,6 @@
 import pygame
 import random
+import os
 
 pygame.font.init()
 
@@ -14,8 +15,10 @@ top_left_x = (s_width - play_width) // 2
 top_left_y = s_height - play_height
 
 
-# SHAPE FORMATS
+# Old game font
+font_path = os.path.join('fonts', 'Honk-Regular.ttf')
 
+# SHAPE FORMATS
 S = [['.....',
       '.....',
       '..00..',
@@ -183,10 +186,11 @@ def get_shape():
 
 
 def draw_text_middle(surface, text, size, color):
-    font = pygame.font.SysFont("comicsans", size, bold=True)
+    font = pygame.font.Font(font_path, size)
     label = font.render(text, 1, color)
 
     surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), top_left_y + play_height / 2 - (label.get_height() / 2)))
+
 
 def draw_grid(surface, grid):
     sx = top_left_x
@@ -222,7 +226,7 @@ def clear_rows(grid, locked):
 
 
 def draw_next_shape(shape, surface):
-    font = pygame.font.SysFont('comicsans', 30)
+    font = pygame.font.Font(font_path, 30)
     label = font.render('Next Shape', 1, (255, 255, 255))
 
     sx = top_left_x + play_width + 50
@@ -250,23 +254,23 @@ def update_score(nscore):
 
 def max_score():
     with open('scores.txt', 'r') as f:
-        lines =f.readlines()
+        lines = f.readlines()
         score = lines[0].strip()
 
     return score
 
 
-def draw_window(surface, grid, score = 0, last_score = 0):
+def draw_window(surface, grid, score=0, last_score=0):
     surface.fill((0, 0, 0))
 
     pygame.font.init()
-    font = pygame.font.SysFont('comicsans', 60)
+    font = pygame.font.Font(font_path, 60)
     label = font.render('Tetris', 1, (255, 255, 255))
 
     surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), 30))
 
     # Current score
-    font = pygame.font.SysFont('comicsans', 30)
+    font = pygame.font.Font(font_path, 30)
     label = font.render('Score: ' + str(score), 1, (255, 255, 255))
 
     sx = top_left_x + play_width + 50
@@ -278,7 +282,7 @@ def draw_window(surface, grid, score = 0, last_score = 0):
     label = font.render('High Score: ' + last_score, 1, (255, 255, 255))
 
     sx = top_left_x - 250
-    sy = top_left_y 
+    sy = top_left_y
 
     surface.blit(label, (sx + 20, sy + 160))
 
